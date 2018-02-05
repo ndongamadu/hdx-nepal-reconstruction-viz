@@ -1,0 +1,84 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <title>Nepal Recontruction Survey</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/dc.css"/>
+        <link rel="stylesheet" type="text/css" href="css/site.css"/>
+        <link rel="stylesheet" type="text/css" href="css/leaflet.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    
+        <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
+        <script src="js/jquery.js"></script> 
+        <!-- <script src="js/bootstrap.min.js"></script> -->
+        <script src="js/d3.min.js"></script>
+        <script src="js/crossfilter.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/dc.js"></script>
+        <script src="js/dc.leaflet.js"></script>
+    </head>
+    <body>
+        <div class="container">
+        <div class="row">
+            <div class="row">
+                <img src="img/HDX-logo-home.svg" alt="" class="img-responsive col-md-2 col-xs-4">
+            </div>
+            <div class="row description">
+                <h2>Nepal: Community Perceptions Survey</h2>
+                <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Ethnicity</h4>
+                        <div class="sideCharts" id="ethnicity"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Occupation</h4>
+                        <div class="sideCharts" id="occupation"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Household Status</h4>
+                        <div class="sideCharts" id="householdStatus"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Gender</h4>
+                        <div class="sideCharts" id="gender"></div>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Age</h4>
+                        <div class="sideCharts" id="age"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                    <a href="#" class="href">Download dataset from HDX</a>
+                    <a class="reset" id="reset" href="javascript:dc.filterAll();dc.redrawAll();">Clear selections</a>
+                    <div id="map"></div>
+            </div>
+        </div>
+        </div> <!-- end container-->
+        <script src="js/site.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+        <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+        </script>
+
+    </body>
+</html>
