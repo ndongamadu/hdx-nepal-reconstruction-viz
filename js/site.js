@@ -104,7 +104,7 @@ function generateCharts(config, data, geom) {
         .xAxis().ticks(3);
 
     householdStatusChart.width(400)
-        .height(250)
+        .height(150)
         .dimension(householdStatusDim)
         .group(householdStatusGroup)
         .data(function (group) {
@@ -118,20 +118,20 @@ function generateCharts(config, data, geom) {
         .xAxis().ticks(3);
 
     var genderColors = d3.scale.ordinal().range(['#0066CC', '#007FFF']);
-    genderChart.width(400)
-        .height(350)
-        .radius(80)
-        .innerRadius(25)
+    genderChart.width(350)
+        .height(250)
+        .radius(100)
         .dimension(genderDim)
         .group(genderGroup)
         .colors(genderColors);
 
     ageChart.width(400)
-        .height(350)
+        .height(250)
         .dimension(ageDim)
         .group(ageGroup)
         .colors([config.color])
         .elasticX(true)
+        .centerBar(false)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
         .xAxis().ticks(5);

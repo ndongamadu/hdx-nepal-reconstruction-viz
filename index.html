@@ -2,10 +2,10 @@
 <html class="no-js" lang="">
     <head>
         <meta charset="utf-8">
-        <title>Nepal Recontruction Survey</title>
+        <title>HDX Nepal Recontruction Survey</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/dc.css"/>
         <link rel="stylesheet" type="text/css" href="css/site.css"/>
         <link rel="stylesheet" type="text/css" href="css/leaflet.css"/>
@@ -69,7 +69,7 @@
                         <a class="reset" id="reset" href="javascript:dc.filterAll();dc.redrawAll();">Clear selections</a>
                     </p>
                     <div id="map"></div>
-                    <p class="small">The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations</p>
+                    <p class="small">The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations.</p>
                     <h4>Community perception on Reconstruction Activities</h4>
                     <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Reconstruction activities </button>
@@ -82,12 +82,14 @@
         </div>
         </div> <!-- end container-->
         <script src="js/site.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113695320-1"></script>
         <script>
-            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
-            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
-        </script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
+          gtag('config', 'UA-113695320-1');
+        </script>
     </body>
 </html>
