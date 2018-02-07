@@ -9,7 +9,7 @@ the script merge the pcodes data to the survey file when the district names matc
 import pandas as pd
 
 surveyData = pd.read_excel('data/survey.xlsx')
-df = pd.read_csv('data/pcodes2.csv')
+df = pd.read_csv('data/pcodes.csv')
 
 pcodedData = surveyData.merge(df, left_on='District', right_on='HRRP_DNAME')
 

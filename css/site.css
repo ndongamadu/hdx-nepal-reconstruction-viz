@@ -2,3 +2,17 @@
     height:400px;
     width:100%;
 }
+
+.dropdown-toggle{
+    width: 60%;
+    text-align: left;
+}
+
+.sidebar{
+    text-align: center;
+}
+
+.dc-chart g.row text {
+    fill: #12110A;
+    font-size:0.9em;
+}

@@ -10,10 +10,8 @@
         <link rel="stylesheet" type="text/css" href="css/site.css"/>
         <link rel="stylesheet" type="text/css" href="css/leaflet.css"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    
-        <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
         <script src="js/jquery.js"></script> 
-        <!-- <script src="js/bootstrap.min.js"></script> -->
+        <script src="js/bootstrap.min.js"></script>
         <script src="js/d3.min.js"></script>
         <script src="js/crossfilter.js"></script>
         <script src="js/leaflet.js"></script>
@@ -24,7 +22,7 @@
         <div class="container">
         <div class="row">
             <div class="row">
-                <img src="img/HDX-logo-home.svg" alt="" class="img-responsive col-md-2 col-xs-4">
+                <img src="img/HDX-logo-home.svg" alt="" class="img-responsive">
             </div>
             <div class="row description">
                 <h2>Nepal: Community Perceptions Survey</h2>
@@ -35,41 +33,52 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 sidebar">
                         <h4>Ethnicity</h4>
                         <div class="sideCharts" id="ethnicity"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 sidebar">
                         <h4>Occupation</h4>
                         <div class="sideCharts" id="occupation"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 sidebar">
                         <h4>Household Status</h4>
                         <div class="sideCharts" id="householdStatus"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 sidebar">
                         <h4>Gender</h4>
                         <div class="sideCharts" id="gender"></div>
                     </div>
                 </div>    
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 sidebar">
                         <h4>Age</h4>
                         <div class="sideCharts" id="age"></div>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
-                    <a href="#" class="href">Download dataset from HDX</a>
-                    <a class="reset" id="reset" href="javascript:dc.filterAll();dc.redrawAll();">Clear selections</a>
+                    <p>
+                        <a href="#" class="href">Download dataset from HDX &nbsp;&nbsp;&nbsp;&nbsp; </a>
+                        <a class="reset" id="reset" href="javascript:dc.filterAll();dc.redrawAll();">Clear selections</a>
+                    </p>
                     <div id="map"></div>
-            </div>
+                    <p class="small">The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations</p>
+                    <h4>Community perception on Reconstruction Activities</h4>
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Reconstruction activities </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Protection activites</a>
+                        <a class="dropdown-item" href="#">Food security activites</a>
+                      </div>
+                    </div>
+
         </div>
         </div> <!-- end container-->
         <script src="js/site.js"></script>

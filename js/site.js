@@ -1,7 +1,7 @@
 var config = {
-    joinAttribute: "code",
+    joinAttribute: "HRRP_DCODE",
     nameAttribute: "HRRP_DNAME",
-    mapFieldName: "District",
+    mapFieldName: "HRRP_DCODE",
     ethnicityFieldName: "Caste/ethnicity",
     occupationFieldName: "Occupation",
     householdStatusFieldName: "What is the current status of your home?",
@@ -9,7 +9,7 @@ var config = {
     ageFieldName: "Age",
     color: "#0066CC",
     data: "data/survey.json",
-    geo: "data/nepal.geojson"
+    geo: "data/map.json"
 };
 
 
@@ -104,7 +104,7 @@ function generateCharts(config, data, geom) {
         .xAxis().ticks(3);
 
     householdStatusChart.width(400)
-        .height(350)
+        .height(250)
         .dimension(householdStatusDim)
         .group(householdStatusGroup)
         .data(function (group) {
@@ -140,18 +140,29 @@ function generateCharts(config, data, geom) {
         .height(350)
         .dimension(mapDim)
         .group(mapGroup)
-        .center([0, 0]) //katmandu 27.7096/85.2918
         .zoom(0)
+        .center([27.7, 85.2]) //katmandu 27.7096/85.2918
         .geojson(geom)
-        .colors(['#A7C1D3', '#DDDDDD'])
-        .colorDomain([0, 1])
+        .colors(['#DDDDDD', '#A7C1D3', '#71A5CA', '#3B88C0', '#056CB6'])
+        .colorDomain([0, 4])
         .colorAccessor(function (d) {
-            console.log('putain');
-            return 1;
-        })
-        .popup(function (d) {
+            var c = 0
+            if (d > 250) {
+                c = 4;
+            } else if (d > 150) {
+                c = 3;
+            } else if (d > 50) {
+                c = 2;
+            } else if (d > 0) {
+                c = 1;
+            };
+            return c;
 
-            return d.properties['HRRP_DNAME'];
+        })
+        .featureKeyAccessor(function (feature) {
+            return feature.properties['HLCIT_CODE'];
+        }).popup(function (feature) {
+            return feature.properties['DISTRICT'];
         })
         .renderPopup(true);
 
@@ -164,10 +175,15 @@ function generateCharts(config, data, geom) {
 
     function zoomToGeom(geom) {
         var bounds = d3.geo.bounds(geom);
-        map.fitBounds([
-            [bounds[0][1], bounds[0][0]],
-            [bounds[1][1], bounds[1][0]]
-        ]);
+        var bnds = [
+                    [26.91925778222094, 84.41872367235965],
+                    [28.752320805960494, 86.6860110153961] 
+                    ];
+        // map.fitBounds([
+        //     [bounds[0][1], bounds[0][0]],
+        //     [bounds[1][1], bounds[1][0]]
+        // ]);
+        map.fitBounds(bnds);
     }
 
 } // end generateCharts()
