@@ -1,17 +1,4 @@
-var config = {
-    joinAttribute: "HRRP_DCODE",
-    nameAttribute: "HRRP_DNAME",
-    mapFieldName: "HRRP_DCODE",
-    ethnicityFieldName: "Caste/ethnicity",
-    occupationFieldName: "Occupation",
-    householdStatusFieldName: "What is the current status of your home?",
-    genderFieldName: "Gender",
-    ageFieldName: "Age",
-    color: "#0066CC",
-    data: "data/survey.json",
-    geo: "data/map.json"
-};
-
+var surveyData ;
 
 function print_filter(filter) {
     var f = eval(filter);
@@ -29,7 +16,7 @@ function print_filter(filter) {
 
 
 // Generate right sidebar charts and map
-function generateCharts(config, data, geom) {
+function generateCharts(geom) {
 
 
     var ethnicityChart = dc.rowChart('#ethnicity');
@@ -40,27 +27,25 @@ function generateCharts(config, data, geom) {
 
     var whereChart = dc.leafletChoroplethChart('#map');
 
-    var cf = crossfilter(data);
 
-
-    var ethnicityDim = cf.dimension(function (d) {
-        return d[config.ethnicityFieldName];
+    var ethnicityDim = surveyData.dimension(function (d) {
+        return d["Caste/ethnicity"];
     });
-    var occupationDim = cf.dimension(function (d) {
-        return d[config.occupationFieldName];
+    var occupationDim = surveyData.dimension(function (d) {
+        return d["Occupation"];
     });
-    var householdStatusDim = cf.dimension(function (d) {
-        return d[config.householdStatusFieldName];
+    var householdStatusDim = surveyData.dimension(function (d) {
+        return d["What is the current status of your home?"];
     });
-    var genderDim = cf.dimension(function (d) {
-        return d[config.genderFieldName];
+    var genderDim = surveyData.dimension(function (d) {
+        return d["Gender"];
     });
-    var ageDim = cf.dimension(function (d) {
-        return d[config.ageFieldName];
+    var ageDim = surveyData.dimension(function (d) {
+        return d["Age"];
     });
 
-    var mapDim = cf.dimension(function (d) {
-        return d[config.mapFieldName];
+    var mapDim = surveyData.dimension(function (d) {
+        return d["HRRP_DCODE"];
     });
     var mapGroup = mapDim.group();
     //print_filter(mapGroup);
@@ -72,7 +57,7 @@ function generateCharts(config, data, geom) {
     var ageGroup = ageDim.group();
 
 
-    var all = cf.groupAll();
+    var all = surveyData.groupAll();
 
     ethnicityChart.width(400)
         .height(350)
@@ -81,7 +66,7 @@ function generateCharts(config, data, geom) {
         .data(function (group) {
             return group.top(10);
         })
-        .colors([config.color])
+        .colors('#0066CC')
         .colorAccessor(function (d, i) {
             return 0;
         })
@@ -96,7 +81,7 @@ function generateCharts(config, data, geom) {
         .data(function (group) {
             return group.top(10);
         })
-        .colors([config.color])
+        .colors('#0066CC')
         .colorAccessor(function (d, i) {
             return 0;
         })
@@ -110,7 +95,7 @@ function generateCharts(config, data, geom) {
         .data(function (group) {
             return group.top(3);
         })
-        .colors([config.color])
+        .colors('#0066CC')
         .colorAccessor(function (d, i) {
             return 0;
         })
@@ -129,9 +114,9 @@ function generateCharts(config, data, geom) {
         .height(250)
         .dimension(ageDim)
         .group(ageGroup)
-        .colors([config.color])
+        .colors('#0066CC')
         .elasticX(true)
-        .centerBar(false)
+        .gap(55)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
         .xAxis().ticks(5);
@@ -186,23 +171,115 @@ function generateCharts(config, data, geom) {
         map.fitBounds(bnds);
     }
 
+function drawSurveyChart(tpe,question,i){
+    var chart = dc.rowChart('#'+tpe+i);
+    var dim = surveyData.dimension(function(d){ 
+        return d[question]; 
+    });
+    var grp = dim.group();
+
+    chart.width('350')
+        .height('350')
+        .dimension(dim)
+        .group(grp)
+        .data(function (group) {
+            return group.top(Infinity);
+        })
+        .colors('#01B64B')
+        .colorAccessor(function (d, i) {
+            return 0;
+        })
+        .elasticX(true)
+        .xAxis().ticks(3);
+        
+        chart.render();
+
+    
+
+}// end drawSurveyChart
+
+function generateSurveyCharts(selection){
+    var reconstructionDivs = [
+           "12. Overall, is the post-earthquake reconstruction process making progress?",
+           "11. Besides building your home, what is the biggest community reconstruction need of your community?",
+           "10. Are you satisfied with grant dispersal process?",
+            "8. Do you face any barriers to receive support to reconstruct your house?",
+            "7.  Are you aware how to build by using safer housing practices?",
+            "6. Have you been able to commit your own resources?",
+            "5. Have you received any housing reconstruction support (this includes both financial and technical)?",
+            "3. Have you consulted an engineer for your housing reconstruction needs?",
+            "2. Do you have the information you need to access housing reconstruction support?"
+         ];
+
+    var foodSecDivs = [
+            "19. Have any members of your family been required to migrate to support your family’s recovery?",
+            "18. Do you feel that your source of livelihood would survive another disaster?",
+            "17. What one skill would you like to develop in support of your livelihood?",
+            "16. Do you face any constraints to livelihood recovery?",
+            "15. Has damage from the earthquake impacted your livelihood?",
+            "13. What is your primary source of income generation now?", 
+            "14. How much of your own food do you grow?",
+            "12. Are your family’s daily food need being met?"
+            ];
+
+    var protectionDivs = [];
+
+    switch (selection) {
+        case "foodSecurity":
+            $('.surveycharts').html('<p>');
+
+            for (var i = foodSecDivs.length - 1; i >= 0; i--) {
+                $('.surveycharts').append('<div class="col-md-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
+                drawSurveyChart("foodSecurity", foodSecDivs[i], i);
+            }
+            break;
+        case "protection":
+            $('.surveycharts').html('<p>');
+            break;
+        default:
+            $('.surveycharts').html('<p>');
+
+            for (var i = reconstructionDivs.length - 1; i >= 0; i--) {
+                $('.surveycharts').append('<div class="col-md-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
+                drawSurveyChart("reconstruction", reconstructionDivs[i], i);
+            }
+            break;
+    }
+
+} //end generateSurveyCharts
+
+$("document").ready(function(){
+    var selectedSurvey = $('.surveySelectionMenu').val();
+    generateSurveyCharts();
+
+});
+
+$('.surveySelectionMenu').on("change", function(e){
+    var selectedSurvey = $('.surveySelectionMenu').val();
+    generateSurveyCharts(selectedSurvey);
+  });
+
+
 } // end generateCharts()
+
+
 
 //data call 
 var dataCall = $.ajax({
     type: 'GET',
-    url: config.data,
+    url: 'data/survey.json',
     dataType: 'json',
 });
 
 var geodataCall = $.ajax({
     type: 'GET',
-    url: config.geo,
+    url: 'data/map.json',
     dataType: 'json',
 });
 
 $.when(dataCall, geodataCall).then(function (dataArgs, geomArgs) {
     var data = dataArgs[0];
     var geom = geomArgs[0];
-    generateCharts(config, data, geom);
+    surveyData = crossfilter(data);
+    generateCharts(geom);
 });

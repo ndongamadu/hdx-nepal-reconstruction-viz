@@ -1,15 +1,24 @@
 body{
     font-family: Raleway; 
 }
+.img-responsive{
+    padding-top: 10px;
+    padding-left: 0px;
+}
+.description{
+    font-size: 1.0em;
+
+}
 
 #map {
     height:400px;
     width:100%;
 }
 
-.dropdown-toggle{
+.surveySelectionMenu{
     width: 60%;
-    text-align: left;
+    height: 40px;
+    font-size: 1.2em;
 }
 
 .sidebar{
@@ -26,6 +35,10 @@ body{
     display: none;
 }
 
+#age svg g g.axis.x text {
+    font-size:0.9em;
+}
+
 .x-axis-label{
     font-size:0.9em;
 }
@@ -39,3 +52,4 @@ body{
     background-color:white;
     font-size:1.0em;
 }
+

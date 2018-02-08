@@ -31,6 +31,7 @@ columnSelection = [
                     '8. Do you face any barriers to receive support to reconstruct your house?',
                     '10. Are you satisfied with grant dispersal process?',
                     '11. Besides building your home, what is the biggest community reconstruction need of your community?',
+                    '12. Overall, is the post-earthquake reconstruction process making progress?',
                     '12. Are your family’s daily food need being met?',
                     '13. What is your primary source of income generation now?',
                     '14. How much of your own food do you grow?',
@@ -46,4 +47,4 @@ columnSelection = [
 data = pcodedData[columnSelection]
 
 #write clean data
-data.to_csv('data/cleanData2.csv')
+data.to_csv('data/cleanData.csv')
