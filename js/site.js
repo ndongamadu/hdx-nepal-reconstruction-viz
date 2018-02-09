@@ -60,11 +60,11 @@ function generateCharts(geom) {
     var all = surveyData.groupAll();
 
     ethnicityChart.width(400)
-        .height(350)
+        .height(370)
         .dimension(ethnicityDim)
         .group(ethnicityGroup)
         .data(function (group) {
-            return group.top(10);
+            return group.top(Infinity);
         })
         .colors('#0066CC')
         .colorAccessor(function (d, i) {
@@ -75,11 +75,11 @@ function generateCharts(geom) {
         .xAxis().ticks(3);
 
     occupationChart.width(400)
-        .height(350)
+        .height(370)
         .dimension(occupationDim)
         .group(occupationGroup)
         .data(function (group) {
-            return group.top(10);
+            return group.top(Infinity);
         })
         .colors('#0066CC')
         .colorAccessor(function (d, i) {
@@ -89,11 +89,11 @@ function generateCharts(geom) {
         .xAxis().ticks(3);
 
     householdStatusChart.width(400)
-        .height(150)
+        .height(370)
         .dimension(householdStatusDim)
         .group(householdStatusGroup)
         .data(function (group) {
-            return group.top(3);
+            return group.top(Infinity);
         })
         .colors('#0066CC')
         .colorAccessor(function (d, i) {
