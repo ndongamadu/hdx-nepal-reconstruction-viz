@@ -269,7 +269,7 @@ function generateCharts(geom) {
                 $('.surveycharts').html('<p>');
 
                 for (var i = foodSecDivs.length - 1; i >= 0; i--) {
-                    $('.surveycharts').append('<div class="col-md-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
                     drawSurveyChart('foodSecurity', foodSecDivs[i], i);
                 }
                 break;
@@ -280,7 +280,7 @@ function generateCharts(geom) {
                 $('.surveycharts').html('<p>');
 
                 for (var i = reconstructionDivs.length - 1; i >= 0; i--) {
-                    $('.surveycharts').append('<div class="col-md-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
                     drawSurveyChart('reconstruction', reconstructionDivs[i], i);
                 }
                 break;
