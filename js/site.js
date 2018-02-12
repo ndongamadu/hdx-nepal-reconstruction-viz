@@ -1,4 +1,37 @@
+function hxlProxyToJSON(input){
+    var output = [];
+    var keys = [];
+    input.forEach(function(e,i){
+        if(i==0){
+            e.forEach(function(e2,i2){
+                var parts = e2.split('+');
+                var key = parts[0]
+                if(parts.length>1){
+                    var atts = parts.splice(1,parts.length);
+                    atts.sort();                    
+                    atts.forEach(function(att){
+                        key +='+'+att
+                    });
+                }
+                keys.push(key);
+            });
+        } else {
+            var row = {};
+            e.forEach(function(e2,i2){
+                row[keys[i2]] = e2;
+            });
+            output.push(row);
+        }
+    });
+    return output;
+}
+
+
 var surveyData ;
+var reconstructionDivs = [];
+var foodSecDivs = [];
+var protectionDivs = [];
+
 var blue = '#007CE0';
 var blueLight = '#72B0E0';
 var green = '#06C0B4';
@@ -203,6 +236,19 @@ function generateCharts(geom) {
         map.fitBounds(bnds);
     }
 
+
+
+// removing used option 
+    if (protectionDivs.length == 0) {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value==="protection";
+        }).remove();
+    } else if (foodSecDivs.length == 0) {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value==="foodSecurity";
+        }).remove();
+    }
+
     function drawSurveyChart(tpe,question,i){
         var chart = dc.rowChart('#'+tpe+i);
         var dim = surveyData.dimension(function(d){ 
@@ -239,30 +285,7 @@ function generateCharts(geom) {
     }// end drawSurveyChart
 
     function generateSurveyCharts(selection){
-        var reconstructionDivs = [
-               "12. Overall, is the post-earthquake reconstruction process making progress?",
-               "11. Besides building your home, what is the biggest community reconstruction need of your community?",
-               "10. Are you satisfied with grant dispersal process?",
-                "8. Do you face any barriers to receive support to reconstruct your house?",
-                "7.  Are you aware how to build by using safer housing practices?",
-                "6. Have you been able to commit your own resources?",
-                "5. Have you received any housing reconstruction support (this includes both financial and technical)?",
-                "3. Have you consulted an engineer for your housing reconstruction needs?",
-                "2. Do you have the information you need to access housing reconstruction support?"
-             ];
 
-        var foodSecDivs = [
-                "19. Have any members of your family been required to migrate to support your family’s recovery?",
-                "18. Do you feel that your source of livelihood would survive another disaster?",
-                "17. What one skill would you like to develop in support of your livelihood?",
-                "16. Do you face any constraints to livelihood recovery?",
-                "15. Has damage from the earthquake impacted your livelihood?",
-                "13. What is your primary source of income generation now?", 
-                "14. How much of your own food do you grow?",
-                "12. Are your family’s daily food need being met?"
-                ];
-
-        var protectionDivs = [];
 
         switch (selection) {
             case "foodSecurity":
@@ -275,6 +298,11 @@ function generateCharts(geom) {
                 break;
             case "protection":
                 $('.surveycharts').html('<p>');
+
+                for (var i = protectionDivs.length - 1; i >= 0; i--) {
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+protectionDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
+                    drawSurveyChart('foodSecurity', protectionDivs[i], i);
+                }
                 break;
             default:
                 $('.surveycharts').html('<p>');
@@ -317,9 +345,28 @@ var geodataCall = $.ajax({
     dataType: 'json',
 });
 
-$.when(dataCall, geodataCall).then(function (dataArgs, geomArgs) {
+var sectionQuestionsCall = $.ajax({ 
+    type: 'GET', 
+    url: 'https://proxy.hxlstandard.org/data.json?strip-headers=on&url=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1trL6M1_ousu_G0p9qoMw65TrbrX-Zi2gAvOzankIOH0%2Fedit%23gid%3D0&force=on',
+    dataType: 'json',
+});
+
+$.when(dataCall, geodataCall,sectionQuestionsCall).then(function (dataArgs, geomArgs, sectorQuestionsArgs) {
     var data = dataArgs[0];
     var geom = geomArgs[0];
+    var sectorQuestions = hxlProxyToJSON(sectorQuestionsArgs[0]);
+    sectorQuestions.forEach( function(element) {
+        if (element['#meta+protection'] !="") {
+            protectionDivs.push(element['#meta+protection']);
+        }
+        if (element['#meta+reconstruction'] !="") {
+            reconstructionDivs.push(element['#meta+reconstruction']);
+        }
+        if (element['#meta+foodsecurity'] !="") {
+            foodSecDivs.push(element['#meta+foodsecurity']);
+        }
+
+    });
     surveyData = crossfilter(data);
     generateCharts(geom);
 });
