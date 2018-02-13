@@ -212,6 +212,7 @@ function generateCharts(geom) {
         })
         .renderPopup(true);
 
+    $('.loader').remove();
     dc.renderAll();
 
     //tooltip events
@@ -220,6 +221,7 @@ function generateCharts(geom) {
 
 
     var map = whereChart.map();
+    map.options.minZoom = 8;
 
     zoomToGeom(geom);
 
@@ -235,8 +237,6 @@ function generateCharts(geom) {
         // ]);
         map.fitBounds(bnds);
     }
-
-
 
 // removing used option 
     if (protectionDivs.length == 0) {
@@ -285,8 +285,6 @@ function generateCharts(geom) {
     }// end drawSurveyChart
 
     function generateSurveyCharts(selection){
-
-
         switch (selection) {
             case "foodSecurity":
                 $('.surveycharts').html('<p>');
@@ -327,9 +325,7 @@ function generateCharts(geom) {
         generateSurveyCharts(selectedSurvey);
     });
 
-
 } // end generateCharts()
-
 
 
 //data call 
