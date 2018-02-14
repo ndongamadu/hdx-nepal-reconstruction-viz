@@ -71,7 +71,6 @@ a:hover {
 }
 
 #age svg g g.axis.x text {
-    font-size: 0.9em;
     text-anchor: end !important;
     transform: rotate(-45deg);
 }
