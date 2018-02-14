@@ -13,7 +13,7 @@ h4 {
 
 body{
     margin: 20px 0;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 a {
@@ -23,6 +23,10 @@ a {
 
 a:hover {
     color: #F2645A;
+}
+
+.viz-container {
+    display: none;
 }
 
 .description{
@@ -59,7 +63,7 @@ a:hover {
 .dc-chart g.row text {
     dominant-baseline: middle;
     fill: #333;
-    font-size: 1.0em;
+    font-size: 12px;
 }
 
 #age svg g g.axis.y {
@@ -67,7 +71,6 @@ a:hover {
 }
 
 #age svg g g.axis.x text {
-    font-size: 0.9em;
     text-anchor: end !important;
     transform: rotate(-45deg);
 }
@@ -97,4 +100,22 @@ a:hover {
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
     font-size: 14px;
+}
+
+.loader {
+    animation: spin 2s linear infinite;
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    height: 70px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 70px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
