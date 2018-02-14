@@ -66,7 +66,6 @@ function computeChartHeight(group) {
 
 // Generate right sidebar charts and map
 function generateCharts(geom) {
-
     var ethnicityChart = dc.rowChart('#ethnicity');
     var occupationChart = dc.rowChart('#occupation');
     var householdStatusChart = dc.rowChart('#householdStatus');
@@ -212,6 +211,7 @@ function generateCharts(geom) {
         })
         .renderPopup(true);
 
+    $('.viz-container').show();
     $('.loader').remove();
     dc.renderAll();
 
