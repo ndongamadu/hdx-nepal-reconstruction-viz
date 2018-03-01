@@ -598,7 +598,7 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
     var _info = false;
 
     var _geojson = false;
-    var _renderPopup = true;
+    var _renderPopup = true; 
     var _brushOn = true;
     var _featureOptions = {
         'fillColor': 'white',
@@ -651,6 +651,7 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
 
     var _popup = function (d, feature) {
         return _chart.title()(d);
+
     };
 
     _chart._postRender = function () {
@@ -745,7 +746,9 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
                 layer.on("mouseover",function(){
                     if(v!==undefined){
-                        var info = _chart.popup()(feature) +": " +v.d.value;
+                        // var info = _chart.popup()(feature) +": " +v.d.value; -- original
+                        var info = _chart.popup()(feature);
+
                     } else {
                         var info = _chart.popup()(feature);
                     }

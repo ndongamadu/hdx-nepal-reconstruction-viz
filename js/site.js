@@ -67,7 +67,7 @@ function computeChartHeight(group) {
 // Generate right sidebar charts and map
 function generateCharts(geom) {
     var ethnicityChart = dc.rowChart('#ethnicity');
-    var occupationChart = dc.rowChart('#occupation');
+    // var occupationChart = dc.rowChart('#occupation');
     var householdStatusChart = dc.rowChart('#householdStatus');
     var genderChart = dc.pieChart('#gender');
     var ageChart = dc.barChart('#age');
@@ -77,9 +77,9 @@ function generateCharts(geom) {
     var ethnicityDim = surveyData.dimension(function (d) {
         return d["Caste/ethnicity"];
     });
-    var occupationDim = surveyData.dimension(function (d) {
-        return d["Occupation"];
-    });
+    // var occupationDim = surveyData.dimension(function (d) {
+    //     return d["Occupation"];
+    // });
     var householdStatusDim = surveyData.dimension(function (d) {
         return d["What is the current status of your home?"];
     });
@@ -94,10 +94,9 @@ function generateCharts(geom) {
         return d["HRRP_DCODE"];
     });
     var mapGroup = mapDim.group();
-    //print_filter(mapGroup);
 
     var ethnicityGroup = ethnicityDim.group();
-    var occupationGroup = occupationDim.group();
+    // var occupationGroup = occupationDim.group();
     var householdStatusGroup = householdStatusDim.group();
     var genderGroup = genderDim.group();
     var ageGroup = ageDim.group();
@@ -106,7 +105,13 @@ function generateCharts(geom) {
     var all = surveyData.groupAll();
 
     //tooltip
-    var rowtip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.key+': '+d3.format('0,000')(d.value); }); 
+    var rowtip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
+        str = "NA";
+        if (parseInt(d.value) > 5) {
+            str = d.key+': '+d3.format('0,000')(d.value);
+        }
+        return str;
+    }); 
 
 
     ethnicityChart.width(sideChartWidth)
@@ -124,25 +129,25 @@ function generateCharts(geom) {
         .colors(blue)
         .elasticX(true)
         .renderTitle(false)
-        .xAxis().ticks(3);
+        .xAxis().ticks(0);
 
 
-    occupationChart.width(sideChartWidth)
-        .height(function () {
-            return computeChartHeight(occupationGroup);
-        })
-        .margins(chartMargins)
-        .fixedBarHeight(chartBarHeight)
-        .gap(chartBarGap)
-        .dimension(occupationDim)
-        .group(occupationGroup)
-        .data(function (group) {
-            return group.top(Infinity);
-        })
-        .colors(blue)
-        .elasticX(true)
-        .renderTitle(false)
-        .xAxis().ticks(3);
+    // occupationChart.width(sideChartWidth)
+    //     .height(function () {
+    //         return computeChartHeight(occupationGroup);
+    //     })
+    //     .margins(chartMargins)
+    //     .fixedBarHeight(chartBarHeight)
+    //     .gap(chartBarGap)
+    //     .dimension(occupationDim)
+    //     .group(occupationGroup)
+    //     .data(function (group) {
+    //         return group.top(Infinity);
+    //     })
+    //     .colors(blue)
+    //     .elasticX(true)
+    //     .renderTitle(false)
+    //     .xAxis().ticks(0);
 
     householdStatusChart.width(sideChartWidth)
         .height(function () {
@@ -159,15 +164,19 @@ function generateCharts(geom) {
         .colors(blue)
         .elasticX(true)
         .renderTitle(false)
-        .xAxis().ticks(3);
+        .xAxis().ticks(0);
 
     var genderColors = d3.scale.ordinal().range([blue, blueLight]);
+
     genderChart.width(350)
         .height(250)
         .radius(100)
         .dimension(genderDim)
         .group(genderGroup)
-        .colors(genderColors);
+        .colors(genderColors)
+        .title(function(d) {
+            return;
+        });;
 
     ageChart.width(350)
         .height(250)
@@ -178,8 +187,7 @@ function generateCharts(geom) {
         .elasticX(true)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
-        .renderTitle(false)
-        .xAxis().ticks(5);
+        .xAxis().ticks(0);
 
     whereChart.width($('#map').width())
         .height(350)
@@ -208,8 +216,8 @@ function generateCharts(geom) {
             return feature.properties['HLCIT_CODE'];
         }).popup(function (feature) {
             return feature.properties['DISTRICT'];
-        })
-        .renderPopup(true);
+        });
+       // .renderPopup(true);
 
     $('.viz-container').show();
     $('.loader').remove();
@@ -274,7 +282,7 @@ function generateCharts(geom) {
             })
             .renderTitle(false)
             .elasticX(true)
-            .xAxis().ticks(3);
+            .xAxis().ticks(0);
             
             chart.render();
 
