@@ -1,3 +1,9 @@
+var config = {
+    currentDataLink: 'link',
+    fslSurveyed: 'no',
+    protectionSurveyed: 'no'
+};
+
 function hxlProxyToJSON(input){
     var output = [];
     var keys = [];
@@ -26,11 +32,12 @@ function hxlProxyToJSON(input){
     return output;
 }
 
-
+var geom;
 var surveyData ;
-var reconstructionDivs = [];
-var foodSecDivs = [];
-var protectionDivs = [];
+var reconstructionDivs = {},
+    foodSecDivs = {},
+    protectionDivs = {},
+    settingsData = {};
 
 var blue = '#007CE0';
 var blueLight = '#72B0E0';
@@ -41,6 +48,46 @@ var sideChartWidth = 400;
 var chartBarHeight = 28;
 var chartBarGap = 2;
 var chartMargins = {top:0, left:15, right:50, bottom: 30};
+
+var initSettings = (function(){
+    $.ajax({
+        type: 'GET',
+        url: 'https://proxy.hxlstandard.org/data.json?strip-headers=on&url=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1trL6M1_ousu_G0p9qoMw65TrbrX-Zi2gAvOzankIOH0%2Fedit%23gid%3D487730406&force=on',
+        format: 'json',
+        async: false,
+        success: function(args){
+            var dataSettings = hxlProxyToJSON(args);
+            dataSettings.forEach( function(element) {
+                settingsData[element['#meta+code']] = {'year': element['#date+year'], 'month': element['#date+month'], 'link': element['#meta+link'], 'fslSurveyed': element['#meta+fsl'], 'protectionSurveyed':element['#meta+protection']};
+            });
+        }
+    })
+})();
+
+initConfig();
+
+//initialize configs and surveyData crossfilter
+function initConfig (argument = 201711) {
+    config.currentDataLink = settingsData[argument].link ;
+    config.fslSurveyed = settingsData[argument].fslSurveyed;
+    config.protectionSurveyed = settingsData[argument].protectionSurveyed;
+
+    dataSurvey = (function(){
+        var a;
+        $.ajax({
+            type: 'GET',
+            url: config.currentDataLink,
+            format: 'json',
+            async: false,
+            success: function(dataArgs){
+                a = hxlProxyToJSON(dataArgs);
+
+            }
+        });
+        return a;
+    })();
+    surveyData = crossfilter (dataSurvey);
+}//end initConfig
 
 
 function print_filter(filter) {
@@ -57,15 +104,18 @@ function print_filter(filter) {
     console.log(filter + "(" + f.length + ") = " + JSON.stringify(f).replace("[", "[\n\t").replace(/}\,/g, "},\n\t").replace("]", "\n]"));
 }
 
+
 //compute height of charts based on number of values
 function computeChartHeight(group) {
     var count = group.all().length;
     var margins = chartMargins.bottom + chartMargins.top;
     return (count*(chartBarGap+chartBarHeight)) + (margins+chartBarGap);
-}
+};
 
 // Generate right sidebar charts and map
-function generateCharts(geom) {
+function generateCharts() {
+    //var surveyData = crossfilter(data);
+
     var ethnicityChart = dc.rowChart('#ethnicity');
     // var occupationChart = dc.rowChart('#occupation');
     var householdStatusChart = dc.rowChart('#householdStatus');
@@ -75,23 +125,24 @@ function generateCharts(geom) {
     var whereChart = dc.leafletChoroplethChart('#map');
 
     var ethnicityDim = surveyData.dimension(function (d) {
-        return d["Caste/ethnicity"];
+        //console.log(d["#respondee+ethnicity"]);
+        return d["#respondee+ethnicity"];
     });
     // var occupationDim = surveyData.dimension(function (d) {
     //     return d["Occupation"];
     // });
     var householdStatusDim = surveyData.dimension(function (d) {
-        return d["What is the current status of your home?"];
+        return d["#indicator+home_status"];
     });
     var genderDim = surveyData.dimension(function (d) {
-        return d["Gender"];
+        return d["#respondee+gender"];
     });
     var ageDim = surveyData.dimension(function (d) {
-        return d["Age"];
+        return d["#respondee+age"];
     });
 
     var mapDim = surveyData.dimension(function (d) {
-        return d["HRRP_DCODE"];
+        return d["#adm2+code"];
     });
     var mapGroup = mapDim.group();
 
@@ -246,12 +297,12 @@ function generateCharts(geom) {
         map.fitBounds(bnds);
     }
 
-// removing used option 
-    if (protectionDivs.length == 0) {
+// generate
+    if (config.protectionSurveyed == 'no') {
         $('.surveySelectionMenu').children().filter(function(index, option) {
             return option.value==="protection";
         }).remove();
-    } else if (foodSecDivs.length == 0) {
+    } else if (config.fslSurveyed == 'no') {
         $('.surveySelectionMenu').children().filter(function(index, option) {
             return option.value==="foodSecurity";
         }).remove();
@@ -293,29 +344,48 @@ function generateCharts(geom) {
     }// end drawSurveyChart
 
     function generateSurveyCharts(selection){
+        // $('.surveycharts').html('<p>');
+        // if (selection == "reconstruction") {
+        //     for (var i = reconstructionDivs.length - 1; i >= 0; i--) {
+        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
+        //         drawSurveyChart('reconstruction', reconstructionDivs[i], i);
+        //     }
+        // }
+        // if (selection == "protection"){
+        //     for (var i = protectionDivs.length - 1; i >= 0; i--) {
+        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+protectionDivs[i]+'</h5><div id="protection'+i+'"></div></div>');
+        //         drawSurveyChart('protection', protectionDivs[i], i);
+        //     }
+        // }
+        // if (selection == "foodSecurity") {
+        //     for (var i = foodSecDivs.length - 1; i >= 0; i--) {
+        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
+        //         drawSurveyChart('foodSecurity', foodSecDivs[i], i);
+        //     }
+        // }
         switch (selection) {
             case "foodSecurity":
                 $('.surveycharts').html('<p>');
 
-                for (var i = foodSecDivs.length - 1; i >= 0; i--) {
-                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
-                    drawSurveyChart('foodSecurity', foodSecDivs[i], i);
+                for (k in foodSecDivs) {
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+foodSecDivs[k].question+'</h5><div id="foodSecurity'+k+'"></div></div>');
+                    drawSurveyChart('foodSecurity', foodSecDivs[k].tag, k);
                 }
                 break;
             case "protection":
                 $('.surveycharts').html('<p>');
 
-                for (var i = protectionDivs.length - 1; i >= 0; i--) {
-                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+protectionDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
-                    drawSurveyChart('foodSecurity', protectionDivs[i], i);
+                for (k in protectionDivs) {
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+protectionDivs[k].question+'</h5><div id="protection'+k+'"></div></div>');
+                    drawSurveyChart('protection', protectionDivs[k].tag, k);
                 }
                 break;
             default:
                 $('.surveycharts').html('<p>');
 
-                for (var i = reconstructionDivs.length - 1; i >= 0; i--) {
-                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
-                    drawSurveyChart('reconstruction', reconstructionDivs[i], i);
+                for (k in reconstructionDivs) {
+                    $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+reconstructionDivs[k].question+'</h5><div id="reconstruction'+k+'"></div></div>');
+                    drawSurveyChart('reconstruction', reconstructionDivs[k].tag, k);
                 }
                 break;
         }
@@ -323,7 +393,7 @@ function generateCharts(geom) {
     } //end generateSurveyCharts
 
     $('document').ready(function(){
-        var selectedSurvey = $('.surveySelectionMenu').val();
+        //var selectedSurvey = $('.surveySelectionMenu').val();
         generateSurveyCharts();
 
     });
@@ -333,8 +403,19 @@ function generateCharts(geom) {
         generateSurveyCharts(selectedSurvey);
     });
 
+
 } // end generateCharts()
 
+//
+for (key in settingsData){
+    settingsData[key].month != "" ? $('#collapse1').append('<div class="panel-body"><a href="#" id='+key+'>'+settingsData[key].month+'  '+settingsData[key].year+'</a></div>') : ''; 
+};
+
+$('.panel-body a').click(function(e){
+    var id = $(this).attr('id');
+    initConfig(id);
+    generateCharts();
+})
 
 //data call 
 var dataCall = $.ajax({
@@ -349,28 +430,50 @@ var geodataCall = $.ajax({
     dataType: 'json',
 });
 
+var settingsCall = $.ajax({
+    type: 'GET',
+    url: 'https://proxy.hxlstandard.org/data.json?strip-headers=on&url=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1trL6M1_ousu_G0p9qoMw65TrbrX-Zi2gAvOzankIOH0%2Fedit%23gid%3D487730406&force=on',
+    dataType: 'json',
+});
+
 var sectionQuestionsCall = $.ajax({ 
     type: 'GET', 
     url: 'https://proxy.hxlstandard.org/data.json?strip-headers=on&url=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1trL6M1_ousu_G0p9qoMw65TrbrX-Zi2gAvOzankIOH0%2Fedit%23gid%3D0&force=on',
     dataType: 'json',
 });
 
-$.when(dataCall, geodataCall,sectionQuestionsCall).then(function (dataArgs, geomArgs, sectorQuestionsArgs) {
-    var data = dataArgs[0];
-    var geom = geomArgs[0];
-    var sectorQuestions = hxlProxyToJSON(sectorQuestionsArgs[0]);
-    sectorQuestions.forEach( function(element) {
-        if (element['#meta+protection'] !="") {
-            protectionDivs.push(element['#meta+protection']);
-        }
-        if (element['#meta+reconstruction'] !="") {
-            reconstructionDivs.push(element['#meta+reconstruction']);
-        }
-        if (element['#meta+foodsecurity'] !="") {
-            foodSecDivs.push(element['#meta+foodsecurity']);
-        }
 
+
+$.when(geodataCall,sectionQuestionsCall, settingsCall).then(function (geomArgs, sectorQuestionsArgs, settingsArgs) {
+    geom = geomArgs[0];
+    var dataSettings = hxlProxyToJSON(settingsArgs[0]);
+    dataSettings.forEach( function(element) {
+        settingsData[element['#meta+code']] = {'year': element['#date+year'], 'month': element['#date+month'], 'link': element['#meta+link'], 'fslSurveyed': element['#meta+fsl'], 'protectionSurveyed':element['#meta+protection']};
     });
-    surveyData = crossfilter(data);
-    generateCharts(geom);
+
+    var sectorQuestions = hxlProxyToJSON(sectorQuestionsArgs[0]);
+    var j = 0,
+        k = 0,
+        l = 0;
+
+    sectorQuestions.forEach( function(element) {
+        if (element['#sector'] == 'reconstruction') {
+            reconstructionDivs[j] = {'question': element['#meta+question'], 'tag': element['#meta+tag']};
+            j++;
+            
+        } else if (element['#sector'] == 'fsl') {
+            foodSecDivs[k] = {'question': element['#meta+question'], 'tag': element['#meta+tag']};
+            k++;
+            
+        } else {
+            protectionDivs[l] = {'question': element['#meta+question'], 'tag': element['#meta+tag']};
+            l++;
+        }
+    });
+    //console.log(reconstructionDivs[0]);
+
+    generateCharts();
+
 });
+
+
