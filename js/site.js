@@ -68,6 +68,9 @@ initConfig();
 
 //initialize configs and surveyData crossfilter
 function initConfig (argument = 201711) {
+    let fsl = settingsData[argument].fslSurveyed;
+    let prct =  settingsData[argument].protectionSurveyed;
+
     config.currentDataLink = settingsData[argument].link ;
     config.fslSurveyed = settingsData[argument].fslSurveyed;
     config.protectionSurveyed = settingsData[argument].protectionSurveyed;
@@ -87,6 +90,30 @@ function initConfig (argument = 201711) {
         return a;
     })();
     surveyData = crossfilter (dataSurvey);
+    
+    // generate dropdown menu selection based on availability on the sectors
+    if (prct == 'no') {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value=="protection";
+        }).hide();
+
+    } else {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value=="protection";
+        }).show();
+    }
+
+    if (fsl == 'no') {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value=="foodSecurity";
+        }).hide();
+
+    } else {
+        $('.surveySelectionMenu').children().filter(function(index, option) {
+            return option.value=="foodSecurity";
+        }).show();
+    }
+
 }//end initConfig
 
 
@@ -271,7 +298,7 @@ function generateCharts() {
        // .renderPopup(true);
 
     $('.viz-container').show();
-    $('.loader').remove();
+    $('.loader').hide();
     dc.renderAll();
 
     //tooltip events
@@ -295,17 +322,6 @@ function generateCharts() {
         //     [bounds[1][1], bounds[1][0]]
         // ]);
         map.fitBounds(bnds);
-    }
-
-// generate
-    if (config.protectionSurveyed == 'no') {
-        $('.surveySelectionMenu').children().filter(function(index, option) {
-            return option.value==="protection";
-        }).remove();
-    } else if (config.fslSurveyed == 'no') {
-        $('.surveySelectionMenu').children().filter(function(index, option) {
-            return option.value==="foodSecurity";
-        }).remove();
     }
 
     function drawSurveyChart(tpe,question,i){
@@ -344,25 +360,6 @@ function generateCharts() {
     }// end drawSurveyChart
 
     function generateSurveyCharts(selection){
-        // $('.surveycharts').html('<p>');
-        // if (selection == "reconstruction") {
-        //     for (var i = reconstructionDivs.length - 1; i >= 0; i--) {
-        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+reconstructionDivs[i]+'</h5><div id="reconstruction'+i+'"></div></div>');
-        //         drawSurveyChart('reconstruction', reconstructionDivs[i], i);
-        //     }
-        // }
-        // if (selection == "protection"){
-        //     for (var i = protectionDivs.length - 1; i >= 0; i--) {
-        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+protectionDivs[i]+'</h5><div id="protection'+i+'"></div></div>');
-        //         drawSurveyChart('protection', protectionDivs[i], i);
-        //     }
-        // }
-        // if (selection == "foodSecurity") {
-        //     for (var i = foodSecDivs.length - 1; i >= 0; i--) {
-        //         $('.surveycharts').append('<div class="col-sm-6"><h5 style="width:350px;">'+foodSecDivs[i]+'</h5><div id="foodSecurity'+i+'"></div></div>');
-        //         drawSurveyChart('foodSecurity', foodSecDivs[i], i);
-        //     }
-        // }
         switch (selection) {
             case "foodSecurity":
                 $('.surveycharts').html('<p>');
@@ -393,7 +390,6 @@ function generateCharts() {
     } //end generateSurveyCharts
 
     $('document').ready(function(){
-        //var selectedSurvey = $('.surveySelectionMenu').val();
         generateSurveyCharts();
 
     });
@@ -414,15 +410,11 @@ for (key in settingsData){
 $('.panel-body a').click(function(e){
     var id = $(this).attr('id');
     initConfig(id);
+    $('.viz-container').hide();
+    $('.loader').show();
     generateCharts();
-})
-
-//data call 
-var dataCall = $.ajax({
-    type: 'GET',
-    url: 'data/survey.json',
-    dataType: 'json',
 });
+
 
 var geodataCall = $.ajax({
     type: 'GET',
@@ -470,7 +462,6 @@ $.when(geodataCall,sectionQuestionsCall, settingsCall).then(function (geomArgs, 
             l++;
         }
     });
-    //console.log(reconstructionDivs[0]);
 
     generateCharts();
 
