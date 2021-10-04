@@ -263,7 +263,7 @@ function generateCharts() {
         .colors(blue)
         .elasticX(true)
         .renderTitle(false)
-        .xAxis().ticks(0);
+        .xAxis().ticks(5);
 
 
     // occupationChart.width(sideChartWidth)
@@ -298,7 +298,7 @@ function generateCharts() {
         .colors(blue)
         .elasticX(true)
         .renderTitle(false)
-        .xAxis().ticks(0);
+        .xAxis().ticks(5);
 
     var genderColors = d3.scale.ordinal().range([blue, blueLight]);
 
@@ -406,7 +406,7 @@ function generateCharts() {
             })
             .renderTitle(false)
             .elasticX(true)
-            .xAxis().ticks(0);
+            .xAxis().ticks(5);
             
             chart.render();
 
